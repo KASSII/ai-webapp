@@ -1,0 +1,6 @@
+<h3>Dataset List</h3>
+<ul>
+{% for dataset in dataset_list %}
+    <li><a href="/dataset/{{ dataset.id }}/">{{ dataset.name }}</a></li>
+{% endfor %}
+</ul>

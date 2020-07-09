@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Project
+from .models import Project, Dataset
 
 # Create your views here.
 def index(request):
@@ -11,21 +11,23 @@ def index(request):
     return render(request, 'main/index.html', context)
 
 @login_required
-def overview_project(request):
+def project_overview(request):
     user = request.user
     project_list = Project.objects.filter(user=user)
     context = {"project_list": project_list}
-    return render(request, 'main/overview_project.html', context)
+    return render(request, 'main/project_overview.html', context)
 
 @login_required
-def detail_project(request, project_id):
+def project_detail(request, project_id):
     user = request.user
     project = get_object_or_404(Project, pk=project_id)
     if project.user.id != user.id:
         raise Http404("Question does not exist")
     
-    context = {}
-    return render(request, 'main/index.html', context)
+    # Get relevant datasets
+    dataset_list = Dataset.objects.filter(project=project)
+    context = {"dataset_list": dataset_list}
+    return render(request, 'main/project_detail.html', context)
 
 @csrf_exempt
 def upload_test(request):
