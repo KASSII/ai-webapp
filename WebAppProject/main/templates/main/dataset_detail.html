@@ -1,0 +1,44 @@
+<p>{{ read_db_type }}</p>
+<img id="img1">
+<img id="img2">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+    $(window).on('load', function (){
+        $.ajax({
+            url:'./',
+            type:'POST',
+            data:{
+                'start_idx':0,
+                'request_data_num':10,
+                'csrfmiddlewaretoken': getCookie('csrftoken'),
+            }
+        })
+        .done(function(data) {
+            data = JSON.parse(data);
+            loaded_data = data["loaded_data"];
+            $("#img1").attr("src", "data:image/png;base64,"+loaded_data[1]["img"]);
+            $("#img2").attr("src", "data:image/png;base64,"+loaded_data[2]["img"]);
+            //$.each(loaded_data, function(index, value) {
+            //    console.log(value["img"]);
+            //})
+        });
+    });
+
+    // Cookieの値を取得する
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>

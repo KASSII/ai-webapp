@@ -10,6 +10,11 @@ class TaskType(enum.Enum):
     def choices(cls):
         return [(m.value, m.name) for m in cls]
 
+ReadDbType = {
+    "with_label": ["classification"],
+    "single_image": ["image_only"],
+}
+
 # Create your models here.
 class Project(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

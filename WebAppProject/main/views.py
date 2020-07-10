@@ -1,9 +1,15 @@
+import os
+import simplejson
+
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Project, Dataset
+from .models import TaskType, ReadDbType
+from AI_webApp.settings import DATASET_ROOT
+from . import core
 
 # Create your views here.
 def index(request):
@@ -22,12 +28,36 @@ def project_detail(request, project_id):
     user = request.user
     project = get_object_or_404(Project, pk=project_id)
     if project.user.id != user.id:
-        raise Http404("Question does not exist")
+        raise Http404("Authentication error")
     
     # Get relevant datasets
     dataset_list = Dataset.objects.filter(project=project)
     context = {"dataset_list": dataset_list}
     return render(request, 'main/project_detail.html', context)
+
+@login_required
+def dataset_detail(request, dataset_id):
+    user = request.user
+    dataset = get_object_or_404(Dataset, pk=dataset_id)
+    if dataset.project.user.id != user.id:
+        raise Http404("Authentication error")
+    # 表示のタイプを取得
+    task_type = [e.name for e in TaskType][dataset.task_type - 1]
+    for k, v in ReadDbType.items():
+        if task_type in v:
+            read_db_type = k
+    context = {"read_db_type": read_db_type}
+
+    if request.method == "GET":
+        return render(request, 'main/dataset_detail.html', context)
+    elif request.method == "POST":
+        db_path = os.path.join(DATASET_ROOT, '{}.ldb'.format(dataset_id))
+        start_idx = int(request.POST["start_idx"])
+        request_data_num = int(request.POST["request_data_num"])
+        loaded_data = core.classification.read_db.load_data(db_path, start_idx, request_data_num)
+        # return json
+        response = simplejson.dumps({'loaded_data':loaded_data}, use_decimal=True)
+        return HttpResponse(response, content_type="text/javascript")
 
 @csrf_exempt
 def upload_test(request):
