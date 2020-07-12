@@ -1,28 +1,72 @@
-<p>{{ read_db_type }}</p>
-<img id="img1">
-<img id="img2">
+<h1>{{ dataset_name }}</h1>
+<h3>data_num: {{ meta_data.data_num }}</h3>
+<h3>task_type: {{ meta_data.task_type }}</h3>
+
+{% with ''|center:meta_data.data_num as range %}
+{% for _ in range %}
+<div class="data" id="{{ forloop.counter }}"></div>
+{% endfor %}
+{% endwith %}
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script>
-    $(window).on('load', function (){
-        $.ajax({
-            url:'./',
-            type:'POST',
-            data:{
-                'start_idx':0,
-                'request_data_num':10,
-                'csrfmiddlewaretoken': getCookie('csrftoken'),
+    $.format = function(format){
+        var i = 0,
+            j = 0,
+            r = "",
+            next = function(args){
+                j += 1; i += 1;
+                return args[j] !== void 0 ? args[j] : "";
+            };
+
+        for(i=0; i<format.length; i++){
+            if(format.charCodeAt(i) === 37){
+                switch(format.charCodeAt(i+1)){
+                    case 115: r += next(arguments); break;
+                    case 100: r += Number(next(arguments)); break;
+                    default: r += format[i]; break;
+                }
+            } else {
+                r += format[i];
             }
-        })
-        .done(function(data) {
-            data = JSON.parse(data);
-            loaded_data = data["loaded_data"];
-            $("#img1").attr("src", "data:image/png;base64,"+loaded_data[1]["img"]);
-            $("#img2").attr("src", "data:image/png;base64,"+loaded_data[2]["img"]);
-            //$.each(loaded_data, function(index, value) {
-            //    console.log(value["img"]);
-            //})
-        });
+        }
+        return r;
+    };
+
+    $(window).on('load', function (){
+        var data_num = $(".data").length;
+        var request_data_num = 10;
+
+        for(var i = 0, len = Math.ceil(data_num/request_data_num); i < len; i++){
+            var forCount = i;
+            (function(i){
+                var start_idx = i * request_data_num;
+                $.ajax({
+                    url:'./',
+                    type:'POST',
+                    data:{
+                        'start_idx':start_idx,
+                        'request_data_num':request_data_num,
+                        'csrfmiddlewaretoken': getCookie('csrftoken'),
+                    }
+                })
+                .done(function(data) {
+                    data = JSON.parse(data);
+                    loaded_datas = data["loaded_data"];
+                    $.each(loaded_datas, function(i, loaded_data) {
+                        var idx = loaded_data["idx"];
+                        var html = "";
+                        if (loaded_data.hasOwnProperty("img")){
+                            html += $.format('<img src="data:image/png;base64,%s" />', loaded_data["img"]);
+                        }
+                        if (loaded_data.hasOwnProperty("label")){
+                            html += $.format('<p>label: %s</p>', loaded_data["label"]);
+                        }
+                        $('#'+String(idx)).append(html);
+                    });
+                });
+            })(forCount);
+        }
     });
 
     // Cookieの値を取得する

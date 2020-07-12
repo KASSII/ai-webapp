@@ -1,4 +1,5 @@
 import os
+import json
 import simplejson
 
 from django.shortcuts import get_object_or_404, render
@@ -41,20 +42,19 @@ def dataset_detail(request, dataset_id):
     dataset = get_object_or_404(Dataset, pk=dataset_id)
     if dataset.project.user.id != user.id:
         raise Http404("Authentication error")
-    # 表示のタイプを取得
-    task_type = [e.name for e in TaskType][dataset.task_type - 1]
-    for k, v in ReadDbType.items():
-        if task_type in v:
-            read_db_type = k
-    context = {"read_db_type": read_db_type}
 
+    dataset_path = os.path.join(DATASET_ROOT, '{}'.format(dataset_id))
     if request.method == "GET":
+        with open(os.path.join(dataset_path, "meta_data.json")) as f:
+            meta_data = json.load(f)
+        data_num = meta_data["data_num"]
+        context = {"dataset_name": dataset.name, "meta_data": meta_data}
         return render(request, 'main/dataset_detail.html', context)
     elif request.method == "POST":
-        db_path = os.path.join(DATASET_ROOT, '{}.ldb'.format(dataset_id))
+        task_type = [e.name for e in TaskType][dataset.task_type - 1]
         start_idx = int(request.POST["start_idx"])
         request_data_num = int(request.POST["request_data_num"])
-        loaded_data = core.classification.read_db.load_data(db_path, start_idx, request_data_num)
+        loaded_data = core.read_dataset_controller.load_data(task_type, dataset_path, start_idx, request_data_num)
         # return json
         response = simplejson.dumps({'loaded_data':loaded_data}, use_decimal=True)
         return HttpResponse(response, content_type="text/javascript")
