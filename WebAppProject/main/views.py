@@ -51,7 +51,7 @@ def dataset_detail(request, dataset_id):
         context = {"dataset_name": dataset.name, "meta_data": meta_data}
         return render(request, 'main/dataset_detail.html', context)
     elif request.method == "POST":
-        task_type = [e.name for e in TaskType][dataset.task_type - 1]
+        task_type = [e.name for e in TaskType][dataset.project.task_type - 1]
         start_idx = int(request.POST["start_idx"])
         request_data_num = int(request.POST["request_data_num"])
         loaded_data = core.read_dataset_controller.load_data(task_type, dataset_path, start_idx, request_data_num)

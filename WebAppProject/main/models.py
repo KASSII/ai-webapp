@@ -24,6 +24,9 @@ class ProcessStatus(enum.Enum):
 class Project(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
+    task_type = models.IntegerField(
+        choices=TaskType.choices()
+    )
     created_at = models.DateTimeField('date published')
     def __str__(self):
         return self.name
@@ -31,9 +34,6 @@ class Project(models.Model):
 class Dataset(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    task_type = models.IntegerField(
-        choices=TaskType.choices()
-    )
     created_at = models.DateTimeField('date published')
     def __str__(self):
         return self.name
@@ -43,9 +43,6 @@ class TrainLog(models.Model):
     description = models.CharField(max_length=100)
     train_dataset = models.ForeignKey(Dataset, on_delete=models.SET_NULL, null=True, related_name = "train_dataset")
     val_dataset = models.ForeignKey(Dataset, on_delete=models.SET_NULL, null=True, related_name = "val_dataset")
-    task_type = models.IntegerField(
-        choices=TaskType.choices()
-    )
     status = models.IntegerField(
         choices=ProcessStatus.choices()
     )
