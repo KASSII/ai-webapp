@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Project, Dataset
-from .models import TaskType, ReadDbType
+from .models import TaskType
 from AI_webApp.settings import DATASET_ROOT
 from . import core
 
