@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Project, Dataset
+from .models import Project, Dataset, TrainLog
 from .models import TaskType
 from AI_webApp.settings import DATASET_ROOT
 from . import core
@@ -31,9 +31,9 @@ def project_detail(request, project_id):
     if project.user.id != user.id:
         raise Http404("Authentication error")
     
-    # Get relevant datasets
-    dataset_list = Dataset.objects.filter(project=project)
-    context = {"dataset_list": dataset_list}
+    dataset_list = Dataset.objects.filter(project=project)             # Get relevant datasets
+    train_log_list = TrainLog.objects.filter(project=project)          # Get relevant train log
+    context = {"dataset_list": dataset_list, "train_log_list": train_log_list}
     return render(request, 'main/project_detail.html', context)
 
 @login_required
@@ -58,6 +58,28 @@ def dataset_detail(request, dataset_id):
         # return json
         response = simplejson.dumps({'loaded_data':loaded_data}, use_decimal=True)
         return HttpResponse(response, content_type="text/javascript")
+
+@login_required
+def train_log_detail(request, train_log_id):
+    user = request.user
+    train_log = get_object_or_404(TrainLog, pk=train_log_id)
+    if train_log.project.user.id != user.id:
+        raise Http404("Authentication error")
+
+    if request.method == "GET":
+        context = {}
+        return render(request, 'main/train_log_detail.html', context)
+
+@login_required
+def evaluate(request, train_log_id):
+    user = request.user
+    train_log = get_object_or_404(TrainLog, pk=train_log_id)
+    if train_log.project.user.id != user.id:
+        raise Http404("Authentication error")
+
+    if request.method == "GET":
+        context = {}
+        return render(request, 'main/evaluate.html', context)
 
 @csrf_exempt
 def upload_test(request):
