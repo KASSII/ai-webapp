@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Project, Dataset, TrainLog
 from .models import TaskType
 from AI_webApp.settings import DATASET_ROOT
-from . import core
+from core import *
 
 # Create your views here.
 def index(request):
@@ -54,7 +54,7 @@ def dataset_detail(request, dataset_id):
         task_type = [e.name for e in TaskType][dataset.project.task_type - 1]
         start_idx = int(request.POST["start_idx"])
         request_data_num = int(request.POST["request_data_num"])
-        loaded_data = core.read_dataset_controller.load_data(task_type, dataset_path, start_idx, request_data_num)
+        loaded_data = read_dataset_controller.load_data(task_type, dataset_path, start_idx, request_data_num)
         # return json
         response = simplejson.dumps({'loaded_data':loaded_data}, use_decimal=True)
         return HttpResponse(response, content_type="text/javascript")

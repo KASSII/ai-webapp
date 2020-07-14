@@ -28,6 +28,7 @@ class Project(models.Model):
         choices=TaskType.choices()
     )
     created_at = models.DateTimeField('date published')
+    public = models.BooleanField(default=False)
     def __str__(self):
         return self.name
 

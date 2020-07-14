@@ -1,0 +1,10 @@
+<h3>TrainLog List</h3>
+<ul>
+{% for train_log in train_log_list %}
+    <li>{{ train_log.description }}</li>
+    {% if train_log.status == 1 %}
+    <li><a href="/demo/inference/{{ train_log.id }}/">inference</a></li>
+    <p></p>
+    {% endif %}
+{% endfor %}
+</ul>
