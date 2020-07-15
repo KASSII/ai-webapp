@@ -1,1 +1,36 @@
 <h1>Inference</h1>
+<a id="run-btn" href="javascript:void(0);">Run</a>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+    var inferenceSocket = new WebSocket(
+        'ws://' + window.location.host +
+        '/ws/inference/');
+    
+    inferenceSocket.onopen = function () {
+        var init_data = {
+            "train_log_id": 1
+        }
+        inferenceSocket.send(JSON.stringify(init_data));
+    };
+
+    inferenceSocket.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        var message = data['message'];
+        console.log(message);
+    };
+
+    inferenceSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+
+    $("#run-btn").click(function() {
+        console.log("test");
+        inferenceSocket.send(JSON.stringify({
+            'message': 10
+        }));
+
+        return false;
+    });
+</script>

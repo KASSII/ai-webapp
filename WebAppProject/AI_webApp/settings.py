@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -124,3 +125,6 @@ STATIC_URL = '/static/'
 DATASET_ROOT = (
     os.path.join(BASE_DIR, 'dataset')
 )
+
+# Channels
+ASGI_APPLICATION = 'AI_webApp.routing.application'
