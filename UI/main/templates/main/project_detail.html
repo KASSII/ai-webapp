@@ -1,0 +1,90 @@
+<h1>{{ project.name }}</h1>
+<p>{{ project.description }}</p>
+
+<form >
+    {% csrf_token %}
+	<input id="upload-files" type="file">
+</form>
+<div id="preview"></div>
+
+<h2>--- Result ---</h2>
+<div id="result"></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+    $.format = function(format){
+        var i = 0,
+            j = 0,
+            r = "",
+            next = function(args){
+                j += 1; i += 1;
+                return args[j] !== void 0 ? args[j] : "";
+            };
+
+        for(i=0; i<format.length; i++){
+            if(format.charCodeAt(i) === 37){
+                switch(format.charCodeAt(i+1)){
+                    case 115: r += next(arguments); break;
+                    case 100: r += Number(next(arguments)); break;
+                    default: r += format[i]; break;
+                }
+            } else {
+                r += format[i];
+            }
+        }
+        return r;
+    };
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+<script>
+    function inference_ajax(encode_image){
+        $.ajax({
+            type: 'POST',
+            url: './',
+            dataType: 'json',
+            'data': {
+	            'encode_image': encode_image,
+                'csrfmiddlewaretoken': getCookie('csrftoken'),
+            },
+            success: function (response) {
+                $('#result').empty();
+                var html = ""
+                $.each(response["predict"], function(i, val) {
+                    html += $.format('<p>%s</p>', val[0]);
+                    html += $.format('<p>%s</p>', String(val[1].toFixed(1)));
+                });
+                $("#result").append(html);
+            }
+        });
+    }
+
+    $('#upload-files').on('change', function(e) {
+        var encode_image = ""
+        var file = e.target.files[0];
+		var fr = new FileReader();
+        fr.onload=function(evt) {
+            encode_image = evt.target.result;
+            var html = $.format('<img src="%s" />', evt.target.result);
+            $("#preview").empty();
+			$("#preview").append(html);
+            inference_ajax(encode_image);
+		}
+        fr.readAsDataURL(file)
+    });
+</script>
