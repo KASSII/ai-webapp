@@ -11,12 +11,8 @@ task_controller.load_weight()
 
 @app.post('/predict')
 async def prediction(data: schemas.Input):
-    encode_images = data.encode_images
+    encode_image = data.encode_image
     # decode image
-    image_list = []
-    for encode_image in encode_images:
-        encode_image = encode_image.split(",")[-1]          # ヘッダが付いている場合、削除したデータ部を読み込み
-        image = Image.open(BytesIO(base64.b64decode(encode_image)))
-        image_list.append(image)
-    results = task_controller.predict(image_list)
-    return results
+    image = Image.open(BytesIO(base64.b64decode(encode_image)))
+    result = task_controller.predict(image)
+    return result

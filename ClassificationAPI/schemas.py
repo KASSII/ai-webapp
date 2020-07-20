@@ -3,12 +3,6 @@ from typing import List
 
 # request
 class Input(BaseModel):
-    encode_images: List[str]
+    encode_image: str
 
 # response
-class Pred(BaseModel):
-    prob: float
-    label: str
-
-class Output(BaseModel):
-    prediction: List[Pred]

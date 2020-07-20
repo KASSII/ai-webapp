@@ -39,23 +39,17 @@ class TaskController():
         weight_path = "core/data/weights.pth"
         self.net.load_state_dict(torch.load(weight_path, map_location=torch.device('cpu')))
 
-    def predict(self, img_list):
+    def predict(self, img):
         self.net.eval()
-        results = []
-        for img in img_list:
-            img_transformed = self.transformer(img, 'val')
-            img_transformed  = img_transformed.unsqueeze(0)
-            img_transformed = img_transformed.to(self.device)
+        img_transformed = self.transformer(img, 'val')
+        img_transformed  = img_transformed.unsqueeze(0)
+        img_transformed = img_transformed.to(self.device)
 
-            outputs = self.net(img_transformed)
-            prob = F.softmax(outputs[0], dim=0).to('cpu')
-            prob = prob.detach().numpy() * 100
-            label = np.argmax(prob)
-            label_name = self.label_map[label]
-            
-            result = {
-                "label": label_name,
-                "prob": float(prob[label])
-            }
-            results.append(result)
-        return results
+        outputs = self.net(img_transformed)
+        probs = F.softmax(outputs[0], dim=0).to('cpu')
+        probs = probs.detach().numpy() * 100
+
+        result = {}
+        for label, prob in zip(self.label_map, probs):
+            result[label] = float(prob)
+        return result
