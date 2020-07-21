@@ -132,4 +132,42 @@
         fr.readAsDataURL(file)
     });
 </script>
+
+{% elif task_type == "segmentation" %}
+<script>
+    function inference_ajax(encode_image){
+        $.ajax({
+            type: 'POST',
+            url: './',
+            dataType: 'json',
+            'data': {
+	            'encode_image': encode_image,
+                'csrfmiddlewaretoken': getCookie('csrftoken'),
+            },
+            success: function (response) {
+                var html = $.format('<img src="data:image/jpeg;base64,%s" />', response["overray_image"]);
+                $("#preview").empty();
+			    $("#preview").append(html);
+
+                $('#result').empty();
+                var html = $.format('<img src="data:image/jpeg;base64,%s" />', response["mask"]);
+                $("#result").append(html);
+            }
+        });
+    }
+
+    $('#upload-files').on('change', function(e) {
+        var encode_image = ""
+        var file = e.target.files[0];
+		var fr = new FileReader();
+        fr.onload=function(evt) {
+            encode_image = evt.target.result;
+            var html = $.format('<img src="%s" />', evt.target.result);
+            $("#preview").empty();
+			$("#preview").append(html);
+            inference_ajax(encode_image);
+		}
+        fr.readAsDataURL(file)
+    });
+</script>
 {% endif %}

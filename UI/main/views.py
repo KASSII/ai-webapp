@@ -1,5 +1,7 @@
 import json
 import urllib.request
+import numpy as np
+import cv2
 from PIL import Image, ImageDraw
 from io import BytesIO
 import base64
@@ -38,7 +40,8 @@ def project_detail(request, project_id):
         api_request = urllib.request.Request(url, data=json_data, method=method, headers=headers)
         with urllib.request.urlopen(api_request) as api_response:
             api_response = api_response.read().decode("utf-8")
-        predict = json.loads(api_response)["predict"]
+        api_response = json.loads(api_response)
+        predict = api_response["predict"]
         
         # task_typeごとにHTMLへ返すデータを推論結果から作成
         response = {}
@@ -82,6 +85,34 @@ def project_detail(request, project_id):
             response = {
                 "predict": response_predict,
                 "image": encode_draw_image
+            }
+        elif task_type == "segmentation":
+            # 入力画像をデコード
+            input_image = Image.open(BytesIO(base64.b64decode(encode_image.split(",")[-1])))
+            # label_mapを取得
+            label_map = api_response["label_map"]
+            # APIから得られたラベル画像をRGBマスク画像に変換
+            annot = np.asarray(predict)
+            annot_width, annot_height = annot.shape
+            mask = np.zeros(shape=(annot_height, annot_width, 3), dtype=np.uint8)
+            for idx, label in enumerate(label_map):
+                color = np.asarray(label["color"])
+                mask[(annot == idx)] = color
+            mask = Image.fromarray(np.uint8(mask))
+            mask = mask.resize(input_image.size, Image.NEAREST)
+            buffered = BytesIO()
+            mask.save(buffered, format="JPEG")
+            encode_mask = base64.b64encode(buffered.getvalue()).decode('utf-8')
+            # 重ねあわせ画像を生成
+            overray_image = cv2.addWeighted(np.asarray(input_image), 1.0, np.asarray(mask), 1.0, 0)
+            overray_image = Image.fromarray(np.uint8(overray_image))
+            buffered = BytesIO()
+            overray_image.save(buffered, format="JPEG")
+            encode_overray_image = base64.b64encode(buffered.getvalue()).decode('utf-8')
+
+            response = {
+                "overray_image": encode_overray_image,
+                "mask": encode_mask
             }
         
         return HttpResponse(json.dumps(response), content_type="text/javascript")

@@ -5,6 +5,7 @@ import enum
 class TaskType(enum.Enum):
     classification = 0
     detection = 1
+    segmentation = 2
     @classmethod
     def choices(cls):
         return [(m.value, m.name) for m in cls]
