@@ -52,6 +52,7 @@
     }
 </script>
 
+{% if task_type == "classification" %}
 <script>
     function inference_ajax(encode_image){
         $.ajax({
@@ -88,3 +89,47 @@
         fr.readAsDataURL(file)
     });
 </script>
+
+{% elif task_type == "detection" %}
+<script>
+    function inference_ajax(encode_image){
+        $.ajax({
+            type: 'POST',
+            url: './',
+            dataType: 'json',
+            'data': {
+	            'encode_image': encode_image,
+                'csrfmiddlewaretoken': getCookie('csrftoken'),
+            },
+            success: function (response) {
+                var html = $.format('<img src="data:image/jpeg;base64,%s" />', response["image"]);
+                $("#preview").empty();
+			    $("#preview").append(html);
+
+                $('#result').empty();
+                var html = ""
+                $.each(response["predict"], function(i, val) {
+                    html += $.format('<img src="data:image/jpeg;base64,%s" />', val["trim_img"]);
+                    html += $.format('<p>%s</p>', val["label"]);
+                    html += $.format('<p>%s</p>', String(val["score"].toFixed(1)));
+                });
+                $("#result").append(html);
+            }
+        });
+    }
+
+    $('#upload-files').on('change', function(e) {
+        var encode_image = ""
+        var file = e.target.files[0];
+		var fr = new FileReader();
+        fr.onload=function(evt) {
+            encode_image = evt.target.result;
+            var html = $.format('<img src="%s" />', evt.target.result);
+            $("#preview").empty();
+			$("#preview").append(html);
+            inference_ajax(encode_image);
+		}
+        fr.readAsDataURL(file)
+    });
+</script>
+{% endif %}
