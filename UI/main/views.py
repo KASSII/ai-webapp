@@ -33,14 +33,15 @@ def project_detail(request, project_id):
         headers = {"Content-Type" : "application/json"}
         api_request = urllib.request.Request(url, data=json_data, method=method, headers=headers)
         with urllib.request.urlopen(api_request) as api_response:
-            predict = api_response.read().decode("utf-8")
-        predict = json.loads(predict)
+            response = api_response.read().decode("utf-8")
+        predict = json.loads(response)["predict"]
         
         # task_typeごとにHTMLへ返すデータを推論結果から作成
         task_type = [e.name for e in TaskType][project.task_type]
         if task_type == "classification":
             # 推定確率順にソート
-            predict = sorted(predict.items(), key=lambda x:x[1], reverse=True)
+            #predict = sorted(predict.items(), key=lambda x:x[1], reverse=True)
+            predict.sort(key=lambda x: x['prob'], reverse=True)
             response = {
                 "predict": predict
             }

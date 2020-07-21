@@ -49,7 +49,7 @@ class TaskController():
         probs = F.softmax(outputs[0], dim=0).to('cpu')
         probs = probs.detach().numpy() * 100
 
-        result = {}
+        result = []
         for label, prob in zip(self.label_map, probs):
-            result[label] = float(prob)
+            result.append({"label": label, "prob": float(prob)})
         return result

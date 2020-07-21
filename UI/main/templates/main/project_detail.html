@@ -66,8 +66,8 @@
                 $('#result').empty();
                 var html = ""
                 $.each(response["predict"], function(i, val) {
-                    html += $.format('<p>%s</p>', val[0]);
-                    html += $.format('<p>%s</p>', String(val[1].toFixed(1)));
+                    html += $.format('<p>%s</p>', val["label"]);
+                    html += $.format('<p>%s</p>', String(val["prob"].toFixed(1)));
                 });
                 $("#result").append(html);
             }
