@@ -21,7 +21,7 @@ class TaskController():
         self.transformer = transform.SegmentationTransform(size, mean, std)
     
         # ネットワークモデルの作成
-        label_map_path = "core/data/label_map.json"
+        label_map_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data/label_map.json")
         with open(label_map_path) as f:
             self.label_map = json.load(f)
         class_num = len(self.label_map)
@@ -36,7 +36,7 @@ class TaskController():
 
     def load_weight(self):
         # 重みファイルの読み込み
-        weight_path = "core/data/weights.pth"
+        weight_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data/weights.pth")
         self.net.load_state_dict(torch.load(weight_path, map_location=torch.device('cpu')))
 
     def predict(self, img):
