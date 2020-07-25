@@ -1,5 +1,74 @@
-<ul>
-{% for project in project_list %}
-    <li><a href="/ai_demo/project/{{ project.id }}/">{{ project.name }}</a></li>
-{% endfor %}
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AI-demo</title>
+{% load static %}
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700|Noto+Sans+JP:400,700" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{% static 'main/css/style.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'main/css/project.css' %}">
+</head>
+<body>
+<!-- ヘッダー -->
+<ul id="nav">
+    <span style="margin-right: 20px;"><a style="color: white; text-decoration: none;" href="/ai_demo/project/">AI Demo</a></span>
 </ul>
+<!-- ヘッダー ここまで -->
+
+<div class="wrapper">
+    <h1 class="task_type_name">Classification</h1>
+    {% for project in project_list %}
+    {% if project.task_type == 0 %}
+    <div class="card card-skin">
+        <a href="/ai_demo/project/{{ project.id }}/"></a>
+        {% with 'main/img/'|add:project.name|add:'.png' as image_static %}
+        <div class="card__imgframe" style="background: url({% static image_static %}) no-repeat center; background-size: cover;"></div>
+        {% endwith %}
+        <div class="card__textbox">
+            <div class="card__titletext">
+                {{ project.name }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+
+
+    <h1 class="task_type_name">Detection</h1>
+    {% for project in project_list %}
+    {% if project.task_type == 1 %}
+    <div class="card card-skin">
+        <a href="/ai_demo/project/{{ project.id }}/"></a>
+        {% with 'main/img/'|add:project.name|add:'.png' as image_static %}
+        <div class="card__imgframe" style="background: url({% static image_static %}) no-repeat center; background-size: cover;"></div>
+        {% endwith %}
+        <div class="card__textbox">
+            <div class="card__titletext">
+                {{ project.name }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+
+
+    <h1 class="task_type_name">Segmentation</h1>
+    {% for project in project_list %}
+    {% if project.task_type == 2 %}
+    <div class="card card-skin">
+        <a href="/ai_demo/project/{{ project.id }}/"></a>
+        {% with 'main/img/'|add:project.name|add:'.png' as image_static %}
+        <div class="card__imgframe" style="background: url({% static image_static %}) no-repeat center; background-size: cover;"></div>
+        {% endwith %}
+        <div class="card__textbox">
+            <div class="card__titletext">
+                {{ project.name }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    
+</div>
+</body>
+</html>
