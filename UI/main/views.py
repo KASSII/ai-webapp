@@ -65,6 +65,7 @@ def project_detail(request, project_id):
                 score = predict_elem["score"]
                 # 対応するトリミング画像を作成
                 trim_img = input_image.crop(tuple(bbox))
+                width, height = trim_img.size
                 buffered = BytesIO()
                 trim_img.save(buffered, format="JPEG")
                 encode_trim_img = base64.b64encode(buffered.getvalue()).decode('utf-8')
@@ -72,7 +73,9 @@ def project_detail(request, project_id):
                 response_predict.append({
                     "label": label,
                     "score": score,
-                    "trim_img": encode_trim_img
+                    "trim_img": encode_trim_img,
+                    "width": width,
+                    "height": height
                 })
 
                 # 元画像に矩形を描画した画像を作成
@@ -84,7 +87,7 @@ def project_detail(request, project_id):
             encode_draw_image = base64.b64encode(buffered.getvalue()).decode('utf-8')
             response = {
                 "predict": response_predict,
-                "image": encode_draw_image
+                "draw_image": encode_draw_image
             }
         elif task_type == "segmentation":
             # 入力画像をデコード
