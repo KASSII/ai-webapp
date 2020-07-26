@@ -14,5 +14,5 @@ async def prediction(data: schemas.Input):
     encode_image = data.encode_image.split(",")[-1]          # ヘッダが付いている場合、削除したデータ部を読み込み
     # decode image
     image = Image.open(BytesIO(base64.b64decode(encode_image)))
-    result = task_controller.predict(image)
-    return {"predict": result}
+    result, label_map = task_controller.predict(image)
+    return {"predict": result, "label_map": label_map}

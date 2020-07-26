@@ -3,6 +3,7 @@ import urllib.request
 import numpy as np
 import cv2
 from PIL import Image, ImageDraw
+import matplotlib.pyplot as plt 
 from io import BytesIO
 import base64
 from django.shortcuts import get_object_or_404, render
@@ -52,6 +53,12 @@ def project_detail(request, project_id):
                 "predict": predict
             }
         elif task_type == "detection":
+            # label_mapを取得
+            label_map = api_response["label_map"]
+            # 描画色を選択
+            num_classes = len(label_map)
+            colors = plt.cm.hsv(np.linspace(0, 1, num_classes))
+
             # 入力画像をデコード
             input_image = Image.open(BytesIO(base64.b64decode(encode_image.split(",")[-1])))
             # 描画用の画像をコピー
@@ -79,7 +86,10 @@ def project_detail(request, project_id):
                 })
 
                 # 元画像に矩形を描画した画像を作成
-                draw.rectangle(tuple(bbox), outline=(255, 0, 0))
+                label_idx = label_map.index(label)
+                color = colors[label_idx][:3]       # RGBA -> RGB
+                color = tuple((color*255).astype(np.uint8))     # 0-1 -> 0-255
+                draw.rectangle(tuple(bbox), outline=color)
             
             # 描画した画像をエンコード
             buffered = BytesIO()

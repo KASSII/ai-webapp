@@ -13,3 +13,4 @@ class Pred(BaseModel):
 
 class Output(BaseModel):
     predict: List[Pred]
+    label_map: List[str]

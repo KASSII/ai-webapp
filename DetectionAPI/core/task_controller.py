@@ -79,4 +79,4 @@ class TaskController():
                 "score": float(score) * 100
             })
         
-        return result
+        return result, self.label_map
