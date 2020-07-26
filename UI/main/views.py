@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from .models import Project
 from .models import TaskType
 
@@ -27,8 +27,19 @@ def project_detail(request, project_id):
         context = {"project": project, "task_type": task_type}
         return render(request, 'main/project_detail.html', context)
     elif request.method == "POST":
-        # APIへ送信するデータの作成
+        # 送信されてきたデータを取得
         encode_image = request.POST["encode_image"]
+
+        # データが画像かどうかチェック
+        header, body = encode_image.split(",")
+        data_format = header.split("/")[-1]
+        data_format = data_format.split(";")[0]
+        if not data_format in ["jpeg", "png"]:
+            response = JsonResponse({"error_message": "この拡張子は対応していません：{}".format(data_format)})
+            response.status_code = 403
+            return response
+
+        # APIへ送信するデータの作成
         obj = {
             "encode_image": encode_image
         }
