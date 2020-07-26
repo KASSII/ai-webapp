@@ -42,6 +42,7 @@
 </html>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="{% static 'main/js/jquery.blockUI.js' %}"></script>
 <script>
     $.format = function(format){
         var i = 0,
@@ -104,8 +105,10 @@
                     html += $.format('<tr><td align="center">%s</td><td align="center">%s %</td></tr>', val["label"], String(val["prob"].toFixed(1)));
                 });
                 $("#result").append(html);
+                $.unblockUI();
             },
             error: function (response) {
+                $.unblockUI();
                 alert(response["responseJSON"]["error_message"]);
             }
         });
@@ -139,8 +142,10 @@
                     }
                 });
                 $("#result").append(html);
+                $.unblockUI();
             },
             error: function (response) {
+                $.unblockUI();
                 alert(response["responseJSON"]["error_message"]);
             }
         });
@@ -166,8 +171,10 @@
                 $('#result').empty();
                 var html = $.format('<img src="data:image/jpeg;base64,%s" />', response["mask"]);
                 $("#result").append(html);
+                $.unblockUI();
             },
             error: function (response) {
+                $.unblockUI();
                 alert(response["responseJSON"]["error_message"]);
             }
         });
@@ -197,6 +204,25 @@
     }
 
     $('#upload-file').on('change', function(e) {
+        // ローディング画面を表示（非表示は各inference_ajax()内で行う）
+        $.blockUI({
+            message: 'Now Analyzing',
+            css: {
+                border: 'none',
+                padding: '10px',
+                backgroundColor: '#333',
+                opacity: .5,
+                color: '#fff'
+            },
+            overlayCSS: {
+                backgroundColor: '#000',
+                opacity: 0.6
+            }
+        });
+
+        // result画面を初期化
+        $('#result').empty();
+
         var encode_image = ""
         var file = e.target.files[0];
 		var fr = new FileReader();
