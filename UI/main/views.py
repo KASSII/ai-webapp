@@ -119,9 +119,13 @@ def project_detail(request, project_id):
             annot = np.asarray(predict)
             annot_width, annot_height = annot.shape
             mask = np.zeros(shape=(annot_height, annot_width, 3), dtype=np.uint8)
+            label_map_for_this_img = []
             for idx, label in enumerate(label_map):
                 color = np.asarray(label["color"])
                 mask[(annot == idx)] = color
+                # この画像に対するラベルマップを作成
+                if (annot == idx).any():
+                    label_map_for_this_img.append(label)
             mask = Image.fromarray(np.uint8(mask))
             mask = mask.resize(input_image.size, Image.NEAREST)
             buffered = BytesIO()
@@ -136,7 +140,8 @@ def project_detail(request, project_id):
 
             response = {
                 "overray_image": encode_overray_image,
-                "mask": encode_mask
+                "mask": encode_mask,
+                "label_map": label_map_for_this_img
             }
         
         return HttpResponse(json.dumps(response), content_type="text/javascript")
