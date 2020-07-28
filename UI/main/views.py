@@ -71,7 +71,7 @@ def project_detail(request, project_id):
             colors = plt.cm.hsv(np.linspace(0, 1, num_classes))
 
             # 入力画像をデコード
-            input_image = Image.open(BytesIO(base64.b64decode(encode_image.split(",")[-1])))
+            input_image = Image.open(BytesIO(base64.b64decode(encode_image.split(",")[-1]))).convert('RGB')
             # 描画用の画像をコピー
             draw_image = input_image.copy()
             draw = ImageDraw.Draw(draw_image)
@@ -112,7 +112,7 @@ def project_detail(request, project_id):
             }
         elif task_type == "segmentation":
             # 入力画像をデコード
-            input_image = Image.open(BytesIO(base64.b64decode(encode_image.split(",")[-1])))
+            input_image = Image.open(BytesIO(base64.b64decode(encode_image.split(",")[-1]))).convert('RGB')
             # label_mapを取得
             label_map = api_response["label_map"]
             # APIから得られたラベル画像をRGBマスク画像に変換

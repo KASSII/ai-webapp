@@ -41,6 +41,7 @@ class TaskController():
 
     def predict(self, img):
         self.net.eval()
+        img = img.convert("RGB")
         width, height = img.size
         dummy_annot = np.zeros(shape=(height, width), dtype=np.int32)
         img_transformed, _ = self.transformer('val', img, Image.fromarray(np.uint8(dummy_annot)))

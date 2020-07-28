@@ -41,6 +41,7 @@ class TaskController():
 
     def predict(self, img):
         self.net.eval()
+        img = img.convert("RGB")
         img_transformed = self.transformer(img, 'val')
         img_transformed  = img_transformed.unsqueeze(0)
         img_transformed = img_transformed.to(self.device)
