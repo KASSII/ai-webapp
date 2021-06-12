@@ -1,0 +1,92 @@
+body {
+	margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    font-family: 'Lato', 'Noto Sans JP', 'ヒラギノ角ゴ ProN', 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', 'MS PGothic', sans-serif;
+}
+.wrapper {
+	margin: 0 auto 0 auto;
+	width: 900px;
+}
+
+#nav li {
+	display: inline;
+	list-style-type: none;
+	padding-right: 30px;
+}
+#nav {
+	margin: 0 0 0 0;
+	padding: 20px 30px 20px 30px;
+	background-color: navy;
+}
+
+.float img {
+	float: left;
+	padding-right: 1em;
+}
+#border {
+    border-bottom-width: 2px; 
+    border-bottom-color: gray; 
+    border-bottom-style: solid; 
+    padding-top: 10px;
+	clear: both;
+}
+
+#upload-btn {
+    margin-top: 10px; 
+    margin-bottom: 10px;
+}
+
+.btn-flat-border {
+    display: inline-block;
+    padding: 0.25em 1em;
+    text-decoration: none;
+    color: navy;
+    border: solid 2px navy;
+    border-radius: 3px;
+    transition: .4s;
+}
+  
+.btn-flat-border:hover {
+    background: navy;
+    color: white;
+}
+
+#upload-file {
+    display:none;
+}
+
+#preview {
+    margin: 0 auto 0 auto; 
+    width: 800px;
+}
+
+#result-title {
+    margin-top: 45px;
+    border-bottom: solid 3px #5472cd;
+    position: relative;
+    display: inline-block;
+}  
+#result-title:after {
+    position: absolute;
+    content: " ";
+    display: block;
+    border-bottom: solid 3px #5472cd;
+    bottom: -3px;
+    width: 20%;
+    display: inline-block;
+}
+
+#result {
+    margin: 0 auto 0 auto; 
+    width: 800px;
+}
+
+table{
+    border-collapse:collapse;
+}
+th{
+    border-bottom:2px solid #000;
+}
+td,th{
+    padding:15px 25px;
+}

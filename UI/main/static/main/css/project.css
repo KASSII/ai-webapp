@@ -1,0 +1,60 @@
+.card{
+    width: 188px;
+    height: auto;
+    margin-left: 30px;
+    margin-bottom: 30px;
+    float: left;
+}
+  
+.card__imgframe{
+    width: 100%;
+    height: auto;
+    padding-top: 75.0%;
+    box-sizing: border-box;
+}
+  
+.card__textbox{
+    width: 100%;
+    height: auto;
+    padding: 20px 18px;
+    background: #ffffff;
+    box-sizing: border-box;
+}
+  
+.card__textbox > * + *{
+    margin-top: 10px;
+}
+  
+.card__titletext{
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 125%;
+}
+  
+.card__overviewtext{
+    font-size: 12px;
+    line-height: 150%;
+}
+
+.card-skin{
+    box-shadow: 2px 2px 6px rgba(0,0,0,.4);
+}
+  
+
+.card {
+    position: relative;
+    z-index: 1; /* 必要であればリンク要素の重なりのベース順序指定 */
+}
+.card a {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-indent:-999px;
+    z-index: 2; /* 必要であればリンク要素の重なりのベース順序指定 */
+}
+
+.task_type_name {
+    clear: both;
+}

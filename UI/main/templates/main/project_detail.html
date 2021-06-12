@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AI-demo</title>
+{% load static %}
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700|Noto+Sans+JP:400,700" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{% static 'main/css/style.css' %}">
+{%csrf_token%}
+</head>
+<body>
+<!-- ヘッダー -->
+<ul id="nav">
+    <span style="margin-right: 20px;"><a style="color: white; text-decoration: none;" href="/ai_demo/project/">AI Demo</a></span>
+</ul>
+<!-- ヘッダー ここまで -->
+<div class="wrapper">
+    <!-- タイトル -->
+    {% with 'main/img/'|add:project.name|add:'.png' as image_static %}
+    <h1 class="float"><img src="{% static image_static %}" width="130">{{ project.name }}</h1>
+    {% endwith %}
+    <p>{{ project.description }}</p>
+    <div id="border"></div>
+    <!-- タイトル ここまで -->
+
+    <!-- アップロード画面 -->
+    <a href="javascript:void(0);" onclick="OnLinkClick()" id="upload-btn" class="btn-flat-border">画像をアップロード</a>
+    <form >
+        <input id="upload-file" type="file" accept="image/*">
+    </form>
+    <div id="preview">
+        <img src="{% static 'main/img/upload.png' %}" width="600">
+    </div>
+    <!-- アップロード画面 ここまで -->
+
+    <!-- 結果画面 -->
+    <h2 id="result-title">Result</h2>
+    <div id="result">
+    </div>
+	<!-- 結果画面 ここまで -->
+</div>
+</body>
+</html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="{% static 'main/js/jquery.blockUI.js' %}"></script>
+<script src="{% static 'main/js/utils.js' %}"></script>
+
+{% if task_type == "classification" %}
+<script src="{% static 'main/js/inference_classification.js' %}"></script>
+{% elif task_type == "detection" %}
+<script src="{% static 'main/js/inference_detection.js' %}"></script>
+{% elif task_type == "segmentation" %}
+<script src="{% static 'main/js/inference_segmentation.js' %}"></script>
+{% endif %}
+
+<script src="{% static 'main/js/inference_common.js' %}"></script>
