@@ -28,7 +28,7 @@ class TaskController():
         self.net = model.PSPNet(n_classes=class_num, img_size=size)
 
         # デバイスを設定
-        self.device = "cpu"
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.net.to(self.device)
 
         # 高速化のため、ベンチマークモードをonにする
@@ -37,7 +37,7 @@ class TaskController():
     def load_weight(self):
         # 重みファイルの読み込み
         weight_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data/weights.pth")
-        self.net.load_state_dict(torch.load(weight_path, map_location=torch.device('cpu')))
+        self.net.load_state_dict(torch.load(weight_path, map_location=torch.device(self.device)))
 
     def predict(self, img):
         self.net.eval()
