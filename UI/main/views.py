@@ -12,9 +12,6 @@ from .models import Project
 from .models import TaskType
 
 # Create your views here.
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
-
 def project_overview(request):
     project_list = Project.objects.all()
     context = {"project_list": project_list}
