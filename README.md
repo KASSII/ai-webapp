@@ -12,7 +12,7 @@
 ## フォルダ構成  
 ```
 ./
-├─ image/ ................ webサーバーのスクリプト（Djangoプロジェクト）  
+├─ UI/ ................... webサーバーのスクリプト（Djangoプロジェクト）  
 ├─ ClassificationAPI ..... 分類AIのサンプルAPI  
 │  └─ main.py ............ FastAPIで実装したAPI本体スクリプト  
 ├─ DetectionAPI .......... 物体検出AIのサンプルAPI  
@@ -60,11 +60,11 @@
    `> cd ClassificationAPI`  
    `> uvicorn main:app --reload --port 8001`  
 
-   * Detection API
+   * Detection API  
    `> cd DetectionAPI`  
    `> uvicorn main:app --reload --port 8002`  
 
-   * Segmentation API
+   * Segmentation API  
    `> cd SegmentationAPI`  
    `> uvicorn main:app --reload --port 8003`  
 
