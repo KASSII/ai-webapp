@@ -55,7 +55,9 @@
    `> python manage.py runserver`  
 
 2. APIサーバーを起動する（webサーバーを起動した端末とは別な端末で実行）  
+   起動前に各APIのREADMEを参照して必要なデータをダウンロードしておく  
    それぞれのAPI毎に別な端末で実行  
+   
    * Classification API  
    `> cd ClassificationAPI`  
    `> uvicorn main:app --reload --port 8001`  
@@ -93,5 +95,5 @@
 4. 新規実装したAPIの情報を登録する  
      Name：任意のAPI名（一覧ページ、詳細ページのタイトルに表示される）  
      Description：APIの説明（詳細ページのタイトルの下に表示される）  
-     Task type：AIのタスクの種類
-     Api url：APIのURI
+     Task type：AIのタスクの種類  
+     Api url：APIのURI  
