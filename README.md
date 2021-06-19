@@ -68,7 +68,7 @@
    `> cd SegmentationAPI`  
    `> uvicorn main:app --reload --port 8003`  
 
-3. ブラウザで[http://127.0.0.1:8000/](http://127.0.0.1:8000/)にアクセス  
+3. ブラウザで[http://127.0.0.1:8000/ai_demo/project](http://127.0.0.1:8000/ai_demo/project)にアクセス  
 
 4. 終了するときは全ての端末でCtr+Cを実行してサーバーを停止させる  
 
